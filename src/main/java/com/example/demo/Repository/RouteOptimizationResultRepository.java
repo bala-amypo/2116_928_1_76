@@ -12,5 +12,4 @@ public interface RouteOptimizationResultRepository extends JpaRepository<RouteOp
 
     }
 
-    
-}
+
