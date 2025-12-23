@@ -10,4 +10,3 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class, args);
     }
 }
-mvn spring-boot:run -e
