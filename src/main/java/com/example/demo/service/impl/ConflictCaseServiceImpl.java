@@ -4,10 +4,13 @@ import com.example.demo.exception.ApiException;
 import com.example.demo.model.ConflictCase;
 import com.example.demo.repository.ConflictCaseRepository;
 import com.example.demo.service.ConflictCaseService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class ConflictCaseServiceImpl implements ConflictCaseService {
+@Service
+public class ConflictCaseServiceImpl
+        implements ConflictCaseService {
 
     private final ConflictCaseRepository repository;
 
@@ -29,7 +32,8 @@ public class ConflictCaseServiceImpl implements ConflictCaseService {
 
     @Override
     public List<ConflictCase> getCasesByPerson(Long personId) {
-        return repository.findByPrimaryPersonIdOrSecondaryPersonId(personId, personId);
+        return repository.findByPrimaryPersonIdOrSecondaryPersonId(
+                personId, personId);
     }
 
     @Override

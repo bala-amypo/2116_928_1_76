@@ -5,10 +5,13 @@ import com.example.demo.model.RelationshipDeclaration;
 import com.example.demo.repository.PersonProfileRepository;
 import com.example.demo.repository.RelationshipDeclarationRepository;
 import com.example.demo.service.RelationshipDeclarationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class RelationshipDeclarationServiceImpl implements RelationshipDeclarationService {
+@Service
+public class RelationshipDeclarationServiceImpl
+        implements RelationshipDeclarationService {
 
     private final RelationshipDeclarationRepository repository;
     private final PersonProfileRepository personRepository;
@@ -21,7 +24,9 @@ public class RelationshipDeclarationServiceImpl implements RelationshipDeclarati
     }
 
     @Override
-    public RelationshipDeclaration declareRelationship(RelationshipDeclaration declaration) {
+    public RelationshipDeclaration declareRelationship(
+            RelationshipDeclaration declaration) {
+
         personRepository.findById(declaration.getPersonId())
                 .orElseThrow(() -> new ApiException("Missing person"));
 
@@ -34,7 +39,9 @@ public class RelationshipDeclarationServiceImpl implements RelationshipDeclarati
     }
 
     @Override
-    public RelationshipDeclaration verifyDeclaration(Long declarationId, Boolean verified) {
+    public RelationshipDeclaration verifyDeclaration(
+            Long declarationId, Boolean verified) {
+
         RelationshipDeclaration declaration = repository.findById(declarationId)
                 .orElseThrow(() -> new ApiException("Missing person"));
 
