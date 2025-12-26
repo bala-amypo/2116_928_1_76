@@ -17,25 +17,25 @@ public class VendorEngagementController {
     }
 
     @PostMapping
-    public VendorEngagementRecord add(
+    public VendorEngagementRecord create(
             @RequestBody VendorEngagementRecord record) {
         return service.addEngagement(record);
     }
 
-    @GetMapping("/employee/{id}")
+    @GetMapping("/employee/{employeeId}")
     public List<VendorEngagementRecord> byEmployee(
-            @PathVariable Long id) {
-        return service.getEngagementsByEmployee(id);
+            @PathVariable Long employeeId) {
+        return service.getEngagementsByEmployee(employeeId);
     }
 
-    @GetMapping("/vendor/{id}")
+    @GetMapping("/vendor/{vendorId}")
     public List<VendorEngagementRecord> byVendor(
-            @PathVariable Long id) {
-        return service.getEngagementsByVendor(id);
+            @PathVariable Long vendorId) {
+        return service.getEngagementsByVendor(vendorId);
     }
 
     @GetMapping
-    public List<VendorEngagementRecord> all() {
+    public List<VendorEngagementRecord> getAll() {
         return service.getAllEngagements();
     }
 }

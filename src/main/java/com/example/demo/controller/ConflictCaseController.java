@@ -1,46 +1,17 @@
-package com.example.demo.controller;
+package com.example.demo.config;
 
-import com.example.demo.model.ConflictCase;
-import com.example.demo.service.ConflictCaseService;
-import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/cases")
-public class ConflictCaseController {
+@Configuration
+public class SwaggerConfig {
 
-    private final ConflictCaseService service;
-
-    public ConflictCaseController(ConflictCaseService service) {
-        this.service = service;
-    }
-
-    @PostMapping
-    public ConflictCase create(@RequestBody ConflictCase conflictCase) {
-        return service.createCase(conflictCase);
-    }
-
-    @PutMapping("/{id}/status")
-    public ConflictCase updateStatus(
-            @PathVariable Long id,
-            @RequestParam String status) {
-        return service.updateCaseStatus(id, status);
-    }
-
-    @GetMapping("/{id}")
-    public ConflictCase getById(@PathVariable Long id) {
-        return service.getCaseById(id);
-    }
-
-    @GetMapping("/person/{personId}")
-    public List<ConflictCase> byPerson(
-            @PathVariable Long personId) {
-        return service.getCasesByPerson(personId);
-    }
-
-    @GetMapping
-    public List<ConflictCase> all() {
-        return service.getAllCases();
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI().servers(List.of(new Server().url("https://9287.pro604cr.amypo.ai/")));
     }
 }

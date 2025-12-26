@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/flags")
+@RequestMapping("/api/conflict-flags")
 public class ConflictFlagController {
 
     private final ConflictFlagService service;
@@ -21,18 +21,18 @@ public class ConflictFlagController {
         return service.addFlag(flag);
     }
 
-    @GetMapping("/{id}")
-    public ConflictFlag getById(@PathVariable Long id) {
-        return service.getFlagById(id);
-    }
-
     @GetMapping("/case/{caseId}")
     public List<ConflictFlag> byCase(@PathVariable Long caseId) {
         return service.getFlagsByCase(caseId);
     }
 
+    @GetMapping("/{id}")
+    public ConflictFlag getById(@PathVariable Long id) {
+        return service.getFlagById(id);
+    }
+
     @GetMapping
-    public List<ConflictFlag> all() {
+    public List<ConflictFlag> getAll() {
         return service.getAllFlags();
     }
 }

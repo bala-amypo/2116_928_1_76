@@ -2,15 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.model.RelationshipDeclaration;
 import com.example.demo.service.RelationshipDeclarationService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/relationships")
+@RequestMapping("/api/relationships")
 public class RelationshipDeclarationController {
-
     private final RelationshipDeclarationService service;
 
     public RelationshipDeclarationController(RelationshipDeclarationService service) {
@@ -18,24 +17,22 @@ public class RelationshipDeclarationController {
     }
 
     @PostMapping
-    public RelationshipDeclaration declare(@RequestBody RelationshipDeclaration declaration) {
-        return service.declareRelationship(declaration);
-    }
-
-    @GetMapping("/{id}")
-    public Optional<RelationshipDeclaration> getById(@PathVariable Long id) {
-        return service.getDeclarationById(id);
+    public ResponseEntity<RelationshipDeclaration> create(@RequestBody RelationshipDeclaration declaration) {
+        return ResponseEntity.ok(service.declareRelationship(declaration));
     }
 
     @GetMapping
-    public List<RelationshipDeclaration> getAll() {
-        return service.getAllDeclarations();
+    public ResponseEntity<List<RelationshipDeclaration>> getAll() {
+        return ResponseEntity.ok(service.getAllDeclarations());
+    }
+
+    @GetMapping("/person/{personId}")
+    public ResponseEntity<List<RelationshipDeclaration>> getByPerson(@PathVariable Long personId) {
+        return ResponseEntity.ok(service.getDeclarationsByPerson(personId));
     }
 
     @PutMapping("/{id}/verify")
-    public RelationshipDeclaration verify(
-            @PathVariable Long id,
-            @RequestParam boolean verified) {
-        return service.verifyDeclaration(id, verified);
+    public ResponseEntity<RelationshipDeclaration> verify(@PathVariable Long id, @RequestParam Boolean verified) {
+        return ResponseEntity.ok(service.verifyDeclaration(id, verified));
     }
 }
