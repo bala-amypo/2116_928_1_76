@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
 import com.example.demo.model.PersonProfile;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -14,10 +15,9 @@ public class UserPrincipal implements UserDetails {
         this.user = user;
     }
 
-    // ✅ TESTS EXPECT STRING, NOT OBJECT
     @Override
-    public String getUsername() {
-        return user.getEmail();
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
     }
 
     @Override
@@ -26,19 +26,12 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
-    public Collection<?> getAuthorities() {
-        return Collections.emptyList();
+    public String getUsername() {
+        return user.getEmail();
     }
 
-    @Override
-    public boolean isAccountNonExpired() { return true; }
-
-    @Override
-    public boolean isAccountNonLocked() { return true; }
-
-    @Override
-    public boolean isCredentialsNonExpired() { return true; }
-
-    @Override
-    public boolean isEnabled() { return true; }
+    @Override public boolean isAccountNonExpired() { return true; }
+    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isCredentialsNonExpired() { return true; }
+    @Override public boolean isEnabled() { return true; }
 }

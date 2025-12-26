@@ -6,30 +6,33 @@ import com.example.demo.service.ConflictCaseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ConflictCaseServiceImpl implements ConflictCaseService {
 
-    private final ConflictCaseRepository conflictCaseRepository;
+    private final ConflictCaseRepository repository;
 
-    // ✅ REQUIRED CONSTRUCTOR (tests expect this)
-    public ConflictCaseServiceImpl(ConflictCaseRepository conflictCaseRepository) {
-        this.conflictCaseRepository = conflictCaseRepository;
+    public ConflictCaseServiceImpl(ConflictCaseRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public ConflictCase save(ConflictCase conflictCase) {
-        return conflictCaseRepository.save(conflictCase);
+    public ConflictCase createCase(ConflictCase conflictCase) {
+        return repository.save(conflictCase);
     }
 
     @Override
-    public Optional<ConflictCase> findById(Long id) {
-        return conflictCaseRepository.findById(id);
+    public List<ConflictCase> getAllCases() {
+        return repository.findAll();
     }
 
     @Override
-    public List<ConflictCase> findAll() {
-        return conflictCaseRepository.findAll();
+    public ConflictCase getCaseById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<ConflictCase> getCasesByPerson(Long personId) {
+        return repository.findByPrimaryPersonIdOrSecondaryPersonId(personId, personId);
     }
 }
