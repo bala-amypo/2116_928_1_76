@@ -5,6 +5,7 @@ import com.example.demo.service.RelationshipDeclarationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/relationships")
@@ -17,25 +18,24 @@ public class RelationshipDeclarationController {
     }
 
     @PostMapping
-    public RelationshipDeclaration create(@RequestBody RelationshipDeclaration declaration) {
-        return service.create(declaration);
+    public RelationshipDeclaration declare(@RequestBody RelationshipDeclaration declaration) {
+        return service.declareRelationship(declaration);
     }
 
     @GetMapping("/{id}")
-    public RelationshipDeclaration getById(@PathVariable Long id) {
-        return service.getById(id);
+    public Optional<RelationshipDeclaration> getById(@PathVariable Long id) {
+        return service.getDeclarationById(id);
     }
 
-    @GetMapping("/person/{personId}")
-    public List<RelationshipDeclaration> getByPerson(@PathVariable Long personId) {
-        return service.getByPersonId(personId);
+    @GetMapping
+    public List<RelationshipDeclaration> getAll() {
+        return service.getAllDeclarations();
     }
 
     @PutMapping("/{id}/verify")
     public RelationshipDeclaration verify(
             @PathVariable Long id,
-            @RequestParam boolean verified
-    ) {
-        return service.verify(id, verified);
+            @RequestParam boolean verified) {
+        return service.verifyDeclaration(id, verified);
     }
 }
