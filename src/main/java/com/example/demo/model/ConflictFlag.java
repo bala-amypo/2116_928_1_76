@@ -1,73 +1,35 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "conflict_flags")
-public class ConflictFlag {
-
+@Table(name = "conflict_case")
+public class ConflictCase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    private Long primaryPersonId;
+    private Long secondaryPersonId;
+    private String triggerSource;
+    private String riskLevel;
+    private String status = "OPEN";
 
-    private String flagType;
-    private String severity;
-    private String description;
-
-    private LocalDateTime flaggedAt = LocalDateTime.now();
-
-    @ManyToOne
-    @JoinColumn(name = "case_id")
-    private ConflictCase conflictCase;
-
-    // ===== GETTERS & SETTERS =====
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFlagType() {
-        return flagType;
-    }
-
-    public void setFlagType(String flagType) {
-        this.flagType = flagType;
-    }
-
-    public String getSeverity() {
-        return severity;
-    }
-
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getFlaggedAt() {
-        return flaggedAt;
-    }
-
-    public void setFlaggedAt(LocalDateTime flaggedAt) {
-        this.flaggedAt = flaggedAt;
-    }
-
-    public ConflictCase getConflictCase() {
-        return conflictCase;
-    }
-
-    public void setConflictCase(ConflictCase conflictCase) {
-        this.conflictCase = conflictCase;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public Long getPrimaryPersonId() { return primaryPersonId; }
+    public void setPrimaryPersonId(Long primaryPersonId) { this.primaryPersonId = primaryPersonId; }
+    
+    public Long getSecondaryPersonId() { return secondaryPersonId; }
+    public void setSecondaryPersonId(Long secondaryPersonId) { this.secondaryPersonId = secondaryPersonId; }
+    
+    public String getTriggerSource() { return triggerSource; }
+    public void setTriggerSource(String triggerSource) { this.triggerSource = triggerSource; }
+    
+    public String getRiskLevel() { return riskLevel; }
+    public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
+    
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
