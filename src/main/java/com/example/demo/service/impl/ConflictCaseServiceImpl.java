@@ -22,8 +22,13 @@ public class ConflictCaseServiceImpl implements ConflictCaseService {
     }
 
     @Override
-    public List<ConflictCase> getAllCases() {
-        return repository.findAll();
+    public ConflictCase updateCaseStatus(Long caseId, String status) {
+        ConflictCase conflictCase = repository.findById(caseId).orElse(null);
+        if (conflictCase != null) {
+            conflictCase.setStatus(status);
+            return repository.save(conflictCase);
+        }
+        return null;
     }
 
     @Override
@@ -34,5 +39,10 @@ public class ConflictCaseServiceImpl implements ConflictCaseService {
     @Override
     public List<ConflictCase> getCasesByPerson(Long personId) {
         return repository.findByPrimaryPersonIdOrSecondaryPersonId(personId, personId);
+    }
+
+    @Override
+    public List<ConflictCase> getAllCases() {
+        return repository.findAll();
     }
 }

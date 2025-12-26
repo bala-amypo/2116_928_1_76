@@ -22,12 +22,17 @@ public class ConflictFlagServiceImpl implements ConflictFlagService {
     }
 
     @Override
-    public List<ConflictFlag> getAllFlags() {
-        return repository.findAll();
+    public ConflictFlag getFlagById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
     @Override
     public List<ConflictFlag> getFlagsByCase(Long caseId) {
         return repository.findByCaseId(caseId);
+    }
+
+    @Override
+    public List<ConflictFlag> getAllFlags() {
+        return repository.findAll();
     }
 }
