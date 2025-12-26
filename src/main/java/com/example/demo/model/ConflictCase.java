@@ -11,52 +11,82 @@ public class ConflictCase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long primaryPersonId;
-
-    private Long secondaryPersonId;
-
-    private String triggerSource;
-
+    private String status;
+    private String statusCode;
     private String riskLevel;
-
-    private String details;
-
-    private String status = "OPEN";
+    private String triggerSource;
 
     private LocalDateTime detectedAt = LocalDateTime.now();
 
-    public ConflictCase() {}
+    @ManyToOne
+    private PersonProfile primaryPerson;
 
-    // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @ManyToOne
+    private PersonProfile secondaryPerson;
 
-    public Long getPrimaryPersonId() { return primaryPersonId; }
-    public void setPrimaryPersonId(Long primaryPersonId) {
-        this.primaryPersonId = primaryPersonId;
+    // ===== GETTERS & SETTERS =====
+
+    public Long getId() {
+        return id;
     }
 
-    public Long getSecondaryPersonId() { return secondaryPersonId; }
-    public void setSecondaryPersonId(Long secondaryPersonId) {
-        this.secondaryPersonId = secondaryPersonId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getTriggerSource() { return triggerSource; }
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getRiskLevel() {
+        return riskLevel;
+    }
+
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
+    }
+
+    public String getTriggerSource() {
+        return triggerSource;
+    }
+
     public void setTriggerSource(String triggerSource) {
         this.triggerSource = triggerSource;
     }
 
-    public String getRiskLevel() { return riskLevel; }
-    public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
+    public LocalDateTime getDetectedAt() {
+        return detectedAt;
+    }
 
-    public String getDetails() { return details; }
-    public void setDetails(String details) { this.details = details; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public LocalDateTime getDetectedAt() { return detectedAt; }
     public void setDetectedAt(LocalDateTime detectedAt) {
         this.detectedAt = detectedAt;
+    }
+
+    public PersonProfile getPrimaryPerson() {
+        return primaryPerson;
+    }
+
+    public void setPrimaryPerson(PersonProfile primaryPerson) {
+        this.primaryPerson = primaryPerson;
+    }
+
+    public PersonProfile getSecondaryPerson() {
+        return secondaryPerson;
+    }
+
+    public void setSecondaryPerson(PersonProfile secondaryPerson) {
+        this.secondaryPerson = secondaryPerson;
     }
 }
