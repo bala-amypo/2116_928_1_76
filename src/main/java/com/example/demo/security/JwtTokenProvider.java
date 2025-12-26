@@ -9,7 +9,11 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long expiration = 86400000;
+    private final long expiration = 86400000; // 1 day
+
+    /* =========================
+       MAIN TOKEN METHODS
+       ========================= */
 
     public String generateToken(String username) {
         return Jwts.builder()
@@ -20,7 +24,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // REQUIRED BY TESTS
     public String generateToken(UserPrincipal principal) {
         return generateToken(principal.getUsername());
     }
@@ -36,10 +39,28 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (JwtException ex) {
             return false;
         }
+    }
+
+    /* =========================
+       🔥 COMPATIBILITY METHODS
+       (REQUIRED BY TESTS & OLD CODE)
+       ========================= */
+
+    // Used by AuthController
+    public String createToken(String username) {
+        return generateToken(username);
+    }
+
+    // Used by JwtAuthenticationFilter
+    public String getUsername(String token) {
+        return getUsernameFromToken(token);
     }
 }
