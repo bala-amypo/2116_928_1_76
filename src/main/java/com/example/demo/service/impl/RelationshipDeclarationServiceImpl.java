@@ -1,8 +1,6 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ApiException;
 import com.example.demo.model.RelationshipDeclaration;
-import com.example.demo.repository.PersonProfileRepository;
 import com.example.demo.repository.RelationshipDeclarationRepository;
 import com.example.demo.service.RelationshipDeclarationService;
 import org.springframework.stereotype.Service;
@@ -10,47 +8,36 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RelationshipDeclarationServiceImpl
-        implements RelationshipDeclarationService {
+public class RelationshipDeclarationServiceImpl implements RelationshipDeclarationService {
 
     private final RelationshipDeclarationRepository repository;
-    private final PersonProfileRepository personRepository;
 
-    public RelationshipDeclarationServiceImpl(
-            RelationshipDeclarationRepository repository,
-            PersonProfileRepository personRepository) {
+    public RelationshipDeclarationServiceImpl(RelationshipDeclarationRepository repository) {
         this.repository = repository;
-        this.personRepository = personRepository;
     }
 
     @Override
-    public RelationshipDeclaration declareRelationship(
-            RelationshipDeclaration declaration) {
-
-        personRepository.findById(declaration.getPersonId())
-                .orElseThrow(() -> new ApiException("Missing person"));
-
+    public RelationshipDeclaration create(RelationshipDeclaration declaration) {
         return repository.save(declaration);
     }
 
     @Override
-    public List<RelationshipDeclaration> getDeclarationsByPerson(Long personId) {
+    public RelationshipDeclaration getById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<RelationshipDeclaration> getByPersonId(Long personId) {
         return repository.findByPersonId(personId);
     }
 
     @Override
-    public RelationshipDeclaration verifyDeclaration(
-            Long declarationId, Boolean verified) {
-
-        RelationshipDeclaration declaration = repository.findById(declarationId)
-                .orElseThrow(() -> new ApiException("Missing person"));
-
-        declaration.setVerified(verified);
-        return repository.save(declaration);
-    }
-
-    @Override
-    public List<RelationshipDeclaration> getAllDeclarations() {
-        return repository.findAll();
+    public RelationshipDeclaration verify(Long id, boolean verified) {
+        RelationshipDeclaration rd = getById(id);
+        if (rd != null) {
+            rd.setVerified(verified);
+            return repository.save(rd);
+        }
+        return null;
     }
 }
