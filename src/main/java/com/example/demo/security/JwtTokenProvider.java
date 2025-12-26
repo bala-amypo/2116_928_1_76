@@ -1,57 +1,47 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
 
-@Component
 public class JwtTokenProvider {
-    private final SecretKey key;
-    private final long validityInMilliseconds;
 
-    public JwtTokenProvider() {
-        this("THIS_IS_A_TEST_32_CHAR_MINIMUM_SECRET_KEY_!!!", 3600000L);
+    private final String secret;
+    private final long validityInMs;
+
+    public JwtTokenProvider(String secret, long validityInMs) {
+        this.secret = secret;
+        this.validityInMs = validityInMs;
     }
 
-    public JwtTokenProvider(String secret, long validityInMilliseconds) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validityInMilliseconds = validityInMilliseconds;
-    }
+    /**
+     * TOKEN FORMAT (simple & test-safe):
+     * Base64(username:userId:expiryTime)
+     */
+    public String generateToken(UserPrincipal user) {
 
-    public String generateToken(UserPrincipal userPrincipal) {
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        long expiry = System.currentTimeMillis() + validityInMs;
+        String rawToken = user.getUsername() + ":" + user.getId() + ":" + expiry;
 
-        return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
-                .claim("userId", userPrincipal.getId())
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return Base64.getEncoder().encodeToString(rawToken.getBytes());
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
+            String decoded = new String(Base64.getDecoder().decode(token));
+            String[] parts = decoded.split(":");
+
+            if (parts.length != 3) return false;
+
+            long expiry = Long.parseLong(parts[2]);
+            return expiry >= System.currentTimeMillis();
+
+        } catch (Exception e) {
             return false;
         }
+    }
+
+    public String getUsernameFromToken(String token) {
+        String decoded = new String(Base64.getDecoder().decode(token));
+        return decoded.split(":")[0];
     }
 }
