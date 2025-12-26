@@ -1,66 +1,45 @@
 package com.example.demo.security;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.util.Date;
 
+@Component
 public class JwtTokenProvider {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long expiration = 86400000; // 1 day
+    private static final String SECRET_KEY = "secretkey123";
+    private static final long EXPIRATION_TIME = 86400000; // 1 day
 
-    /* =========================
-       MAIN TOKEN METHODS
-       ========================= */
+    // ✅ REQUIRED BY TESTS
+    public String createToken(String username) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + EXPIRATION_TIME);
 
-    public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
-    public String generateToken(UserPrincipal principal) {
-        return generateToken(principal.getUsername());
-    }
-
-    public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
+    // ✅ REQUIRED BY TESTS
+    public String getUsername(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
+    // ✅ REQUIRED BY TESTS
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
-        } catch (JwtException ex) {
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
-    }
-
-    /* =========================
-       🔥 COMPATIBILITY METHODS
-       (REQUIRED BY TESTS & OLD CODE)
-       ========================= */
-
-    // Used by AuthController
-    public String createToken(String username) {
-        return generateToken(username);
-    }
-
-    // Used by JwtAuthenticationFilter
-    public String getUsername(String token) {
-        return getUsernameFromToken(token);
     }
 }

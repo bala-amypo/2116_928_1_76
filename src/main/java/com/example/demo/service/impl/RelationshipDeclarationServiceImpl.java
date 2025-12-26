@@ -23,19 +23,19 @@ public class RelationshipDeclarationServiceImpl implements RelationshipDeclarati
     }
 
     @Override
-    public Optional<RelationshipDeclaration> getDeclarationById(Long id) {
-        return repository.findById(id);
-    }
-
-    @Override
     public List<RelationshipDeclaration> getAllDeclarations() {
         return repository.findAll();
     }
 
     @Override
+    public Optional<RelationshipDeclaration> getDeclarationById(Long id) {
+        return repository.findById(id);
+    }
+
+    @Override
     public RelationshipDeclaration verifyDeclaration(Long id, boolean verified) {
-        RelationshipDeclaration declaration =
-                repository.findById(id).orElseThrow();
+        RelationshipDeclaration declaration = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Declaration not found"));
         declaration.setVerified(verified);
         return repository.save(declaration);
     }
