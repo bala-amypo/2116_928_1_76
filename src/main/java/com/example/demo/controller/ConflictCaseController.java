@@ -1,17 +1,49 @@
-package com.example.demo.config;
+package com.example.demo.controller;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.servers.Server;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.example.demo.model.ConflictCase;
+import com.example.demo.service.ConflictCaseService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Configuration
-public class SwaggerConfig {
+@RestController
+@RequestMapping("/conflicts")
+public class ConflictCaseController {
 
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI().servers(List.of(new Server().url("https://9287.pro604cr.amypo.ai/")));
+    private final ConflictCaseService service;
+
+    public ConflictCaseController(ConflictCaseService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public ResponseEntity<ConflictCase> create(@RequestBody ConflictCase conflictCase) {
+        return ResponseEntity.ok(service.createCase(conflictCase));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ConflictCase> getById(@PathVariable Long id) {
+        return service.getCaseById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ConflictCase>> getAll() {
+        return ResponseEntity.ok(service.getAllCases());
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<ConflictCase> updateStatus(
+            @PathVariable Long id,
+            @RequestParam String status
+    ) {
+        return ResponseEntity.ok(service.updateCaseStatus(id, status));
+    }
+
+    @GetMapping("/person/{personId}")
+    public ResponseEntity<List<ConflictCase>> getByPerson(@PathVariable Long personId) {
+        return ResponseEntity.ok(service.getCasesByPerson(personId));
     }
 }

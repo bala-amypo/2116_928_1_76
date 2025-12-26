@@ -8,10 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-public class SwaggerConfig {
+public class OpenApiConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI().servers(List.of(new Server().url("https://9287.pro604cr.amypo.ai/")));
+        return new OpenAPI()
+                .servers(List.of(
+                        new Server().url("https://9098.32procr.amypo.ai/")
+                ));
     }
 }
