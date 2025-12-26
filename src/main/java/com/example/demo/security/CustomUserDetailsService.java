@@ -2,36 +2,32 @@ package com.example.demo.security;
 
 import com.example.demo.model.PersonProfile;
 import com.example.demo.repository.PersonProfileRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final PersonProfileRepository personProfileRepository;
+    private final PersonProfileRepository repo;
 
-    public CustomUserDetailsService(PersonProfileRepository personProfileRepository) {
-        this.personProfileRepository = personProfileRepository;
+    // ✅ REQUIRED by tests
+    public CustomUserDetailsService(PersonProfileRepository repo) {
+        this.repo = repo;
     }
 
-    // ✅ REQUIRED BY SPRING SECURITY
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        PersonProfile user = personProfileRepository
-                .findByEmail(username)
+    public UserDetails loadUserByUsername(String email) {
+        PersonProfile user = repo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
         return new UserPrincipal(user);
     }
 
-    // ✅ REQUIRED BY TEST CASES
+    // ✅ REQUIRED by tests
     public PersonProfile register(String name, String email, String password) {
-        PersonProfile user = new PersonProfile();
-        user.setFullName(name);
-        user.setEmail(email);
-        user.setReferenceId(email);
-        return personProfileRepository.save(user);
+        PersonProfile p = new PersonProfile();
+        p.setFullName(name);
+        p.setEmail(email);
+        p.setReferenceId(email);
+        return repo.save(p);
     }
 }
