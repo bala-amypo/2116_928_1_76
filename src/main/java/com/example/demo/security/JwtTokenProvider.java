@@ -1,38 +1,43 @@
 package com.example.demo.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Component
 public class JwtTokenProvider {
+    private final SecretKey key;
+    private final long validityInMilliseconds;
 
-    private final String JWT_SECRET = "secretkey123";
-    private final long JWT_EXPIRATION = 86400000;
-
-    // === REQUIRED BY TESTS ===
-    public String createToken(String username) {
-        return generateToken(username);
+    public JwtTokenProvider() {
+        this("THIS_IS_A_TEST_32_CHAR_MINIMUM_SECRET_KEY_!!!", 3600000L);
     }
 
-    public String getUsername(String token) {
-        return getUsernameFromToken(token);
+    public JwtTokenProvider(String secret, long validityInMilliseconds) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    // === INTERNAL METHODS ===
-    public String generateToken(String username) {
+    public String generateToken(UserPrincipal userPrincipal) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + JWT_EXPIRATION);
+        Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userPrincipal.getUsername())
+                .claim("userId", userPrincipal.getId())
                 .setIssuedAt(now)
-                .setExpiration(expiry)
-                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+                .setExpiration(validity)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String getUsernameFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(JWT_SECRET)
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -40,9 +45,12 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }

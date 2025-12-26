@@ -1,33 +1,32 @@
 package com.example.demo.security;
 
-import com.example.demo.model.PersonProfile;
-import com.example.demo.repository.PersonProfileRepository;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    private final Map<String, UserRecord> users = new HashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
 
-    private final PersonProfileRepository repo;
-
-    // ✅ REQUIRED by tests
-    public CustomUserDetailsService(PersonProfileRepository repo) {
-        this.repo = repo;
+    public UserRecord register(String email, String password, String role) {
+        Long id = idGenerator.getAndIncrement();
+        UserRecord user = new UserRecord(id, email, password, role);
+        users.put(email, user);
+        return user;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
-        PersonProfile user = repo.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new UserPrincipal(user);
-    }
-
-    // ✅ REQUIRED by tests
-    public PersonProfile register(String name, String email, String password) {
-        PersonProfile p = new PersonProfile();
-        p.setFullName(name);
-        p.setEmail(email);
-        p.setReferenceId(email);
-        return repo.save(p);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserRecord user = users.get(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
+        return new UserPrincipal(user.getId(), user.getEmail(), user.getPassword(), user.getRole());
     }
 }
