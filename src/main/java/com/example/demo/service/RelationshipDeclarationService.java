@@ -1,81 +1,16 @@
-package com.example.demo.model;
+package com.example.demo.service;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.example.demo.model.RelationshipDeclaration;
 
-@Entity
-@Table(name = "relationship_declarations")
-public class RelationshipDeclaration {
+import java.util.List;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public interface RelationshipDeclarationService {
 
-    private String relationshipType;
-    private String relatedPersonName;
-    private String description;
-    private boolean verified;
-    private LocalDateTime declaredAt;
+    RelationshipDeclaration create(RelationshipDeclaration declaration);
 
-    @ManyToOne
-    private PersonProfile person;
+    RelationshipDeclaration getById(Long id);
 
-    public RelationshipDeclaration() {}
+    List<RelationshipDeclaration> getByPersonId(Long personId);
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getRelationshipType() {
-        return relationshipType;
-    }
-
-    public void setRelationshipType(String relationshipType) {
-        this.relationshipType = relationshipType;
-    }
-
-    public String getRelatedPersonName() {
-        return relatedPersonName;
-    }
-
-    public void setRelatedPersonName(String relatedPersonName) {
-        this.relatedPersonName = relatedPersonName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    // ✅ TESTS REQUIRE BOTH getVerified() AND isVerified()
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
-    }
-
-    public LocalDateTime getDeclaredAt() {
-        return declaredAt;
-    }
-
-    public void setDeclaredAt(LocalDateTime declaredAt) {
-        this.declaredAt = declaredAt;
-    }
-
-    public PersonProfile getPerson() {
-        return person;
-    }
-
-    public void setPerson(PersonProfile person) {
-        this.person = person;
-    }
+    RelationshipDeclaration verify(Long id, boolean verified);
 }
