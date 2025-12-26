@@ -1,93 +1,42 @@
-package com.example.demo.model;
+package com.example.demo.service.impl;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.example.demo.model.RelationshipDeclaration;
+import com.example.demo.repository.RelationshipDeclarationRepository;
+import com.example.demo.service.RelationshipDeclarationService;
+import org.springframework.stereotype.Service;
 
-@Entity
-@Table(name = "person_profiles")
-public class PersonProfile {
+import java.util.List;
+import java.util.Optional;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Service
+public class RelationshipDeclarationServiceImpl implements RelationshipDeclarationService {
 
-    private String fullName;
+    private final RelationshipDeclarationRepository repository;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false, unique = true)
-    private String referenceId;
-
-    private String department;
-    private String personType;
-    private boolean relationshipDeclared;
-    private LocalDateTime createdAt;
-
-    public PersonProfile() {}
-
-    public Long getId() {
-        return id;
+    public RelationshipDeclarationServiceImpl(RelationshipDeclarationRepository repository) {
+        this.repository = repository;
     }
 
-    public String getFullName() {
-        return fullName;
+    @Override
+    public RelationshipDeclaration declareRelationship(RelationshipDeclaration declaration) {
+        return repository.save(declaration);
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    @Override
+    public List<RelationshipDeclaration> getAllDeclarations() {
+        return repository.findAll();
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public Optional<RelationshipDeclaration> getDeclarationById(Long id) {
+        return repository.findById(id);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(String referenceId) {
-        this.referenceId = referenceId;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getPersonType() {
-        return personType;
-    }
-
-    public void setPersonType(String personType) {
-        this.personType = personType;
-    }
-
-    public boolean isRelationshipDeclared() {
-        return relationshipDeclared;
-    }
-
-    public void setRelationshipDeclared(boolean relationshipDeclared) {
-        this.relationshipDeclared = relationshipDeclared;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    // ✅ TESTS EXPECT THIS METHOD
-    public PersonProfile getBody() {
-        return this;
+    @Override
+    public RelationshipDeclaration verifyDeclaration(Long id, boolean verified) {
+        RelationshipDeclaration declaration = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Declaration not found"));
+        declaration.setVerified(verified);
+        return repository.save(declaration);
     }
 }

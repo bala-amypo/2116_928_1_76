@@ -11,45 +11,73 @@ public class RelationshipDeclaration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long personId;
-
-    private String relatedPersonName;
-
     private String relationshipType;
-
+    private String relatedPersonName;
     private String description;
+
+    private boolean verified;
 
     private LocalDateTime declaredAt = LocalDateTime.now();
 
-    private Boolean verified = false;
+    @ManyToOne
+    @JoinColumn(name = "person_id")
+    private PersonProfile person;
 
-    public RelationshipDeclaration() {}
+    // ===== GETTERS & SETTERS =====
 
-    // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getPersonId() { return personId; }
-    public void setPersonId(Long personId) { this.personId = personId; }
-
-    public String getRelatedPersonName() { return relatedPersonName; }
-    public void setRelatedPersonName(String relatedPersonName) {
-        this.relatedPersonName = relatedPersonName;
+    public Long getId() {
+        return id;
     }
 
-    public String getRelationshipType() { return relationshipType; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getRelationshipType() {
+        return relationshipType;
+    }
+
     public void setRelationshipType(String relationshipType) {
         this.relationshipType = relationshipType;
     }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getRelatedPersonName() {
+        return relatedPersonName;
+    }
 
-    public LocalDateTime getDeclaredAt() { return declaredAt; }
+    public void setRelatedPersonName(String relatedPersonName) {
+        this.relatedPersonName = relatedPersonName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public LocalDateTime getDeclaredAt() {
+        return declaredAt;
+    }
+
     public void setDeclaredAt(LocalDateTime declaredAt) {
         this.declaredAt = declaredAt;
     }
 
-    public Boolean getVerified() { return verified; }
-    public void setVerified(Boolean verified) { this.verified = verified; }
+    public PersonProfile getPerson() {
+        return person;
+    }
+
+    public void setPerson(PersonProfile person) {
+        this.person = person;
+    }
 }
