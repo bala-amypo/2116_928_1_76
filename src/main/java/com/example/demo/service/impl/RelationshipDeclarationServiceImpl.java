@@ -6,6 +6,7 @@ import com.example.demo.service.RelationshipDeclarationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RelationshipDeclarationServiceImpl implements RelationshipDeclarationService {
@@ -17,27 +18,25 @@ public class RelationshipDeclarationServiceImpl implements RelationshipDeclarati
     }
 
     @Override
-    public RelationshipDeclaration create(RelationshipDeclaration declaration) {
+    public RelationshipDeclaration declareRelationship(RelationshipDeclaration declaration) {
         return repository.save(declaration);
     }
 
     @Override
-    public RelationshipDeclaration getById(Long id) {
-        return repository.findById(id).orElse(null);
+    public Optional<RelationshipDeclaration> getDeclarationById(Long id) {
+        return repository.findById(id);
     }
 
     @Override
-    public List<RelationshipDeclaration> getByPersonId(Long personId) {
-        return repository.findByPersonId(personId);
+    public List<RelationshipDeclaration> getAllDeclarations() {
+        return repository.findAll();
     }
 
     @Override
-    public RelationshipDeclaration verify(Long id, boolean verified) {
-        RelationshipDeclaration rd = getById(id);
-        if (rd != null) {
-            rd.setVerified(verified);
-            return repository.save(rd);
-        }
-        return null;
+    public RelationshipDeclaration verifyDeclaration(Long id, boolean verified) {
+        RelationshipDeclaration declaration =
+                repository.findById(id).orElseThrow();
+        declaration.setVerified(verified);
+        return repository.save(declaration);
     }
 }
