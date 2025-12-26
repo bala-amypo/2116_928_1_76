@@ -1,35 +1,44 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "conflict_case")
-public class ConflictCase {
+public class ConflictFlag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    private Long primaryPersonId;
-    private Long secondaryPersonId;
-    private String triggerSource;
-    private String riskLevel;
-    private String status = "OPEN";
+
+    private Long caseId;
+    private String flagType;
+    private String description;
+    private String severity;
+    private LocalDateTime flaggedAt;
+
+    @PrePersist
+    public void onCreate() {
+        flaggedAt = LocalDateTime.now();
+    }
+
+    public ConflictFlag() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    
-    public Long getPrimaryPersonId() { return primaryPersonId; }
-    public void setPrimaryPersonId(Long primaryPersonId) { this.primaryPersonId = primaryPersonId; }
-    
-    public Long getSecondaryPersonId() { return secondaryPersonId; }
-    public void setSecondaryPersonId(Long secondaryPersonId) { this.secondaryPersonId = secondaryPersonId; }
-    
-    public String getTriggerSource() { return triggerSource; }
-    public void setTriggerSource(String triggerSource) { this.triggerSource = triggerSource; }
-    
-    public String getRiskLevel() { return riskLevel; }
-    public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
-    
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+
+    public Long getCaseId() { return caseId; }
+    public void setCaseId(Long caseId) { this.caseId = caseId; }
+
+    public String getFlagType() { return flagType; }
+    public void setFlagType(String flagType) { this.flagType = flagType; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
 }
