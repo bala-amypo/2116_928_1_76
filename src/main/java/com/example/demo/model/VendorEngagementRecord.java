@@ -5,40 +5,39 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "vendor_engagements")
-public class VendorEngagement {
+public class VendorEngagementRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double amount;
+    private Long vendorId;
+    private Long employeeId;
     private String engagementType;
+    private double amount;
+    private LocalDate engagementDate;
     private String notes;
 
-    private LocalDate engagementDate;
-
-    @ManyToOne
-    private PersonProfile employee;
-
-    @ManyToOne
-    private PersonProfile vendor;
-
-    // ===== GETTERS & SETTERS =====
+    // ---------- GETTERS & SETTERS ----------
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getVendorId() {
+        return vendorId;
     }
 
-    public Double getAmount() {
-        return amount;
+    public void setVendorId(Long vendorId) {
+        this.vendorId = vendorId;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    public Long getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getEngagementType() {
@@ -49,12 +48,12 @@ public class VendorEngagement {
         this.engagementType = engagementType;
     }
 
-    public String getNotes() {
-        return notes;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public LocalDate getEngagementDate() {
@@ -65,19 +64,11 @@ public class VendorEngagement {
         this.engagementDate = engagementDate;
     }
 
-    public PersonProfile getEmployee() {
-        return employee;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setEmployee(PersonProfile employee) {
-        this.employee = employee;
-    }
-
-    public PersonProfile getVendor() {
-        return vendor;
-    }
-
-    public void setVendor(PersonProfile vendor) {
-        this.vendor = vendor;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
