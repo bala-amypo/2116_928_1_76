@@ -1,20 +1,21 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ApiException;
+import com.example.demo.model.PersonProfile;
 import com.example.demo.model.VendorEngagementRecord;
-import com.example.demo.repository.VendorEngagementRecordRepository;
 import com.example.demo.repository.PersonProfileRepository;
+import com.example.demo.repository.VendorEngagementRecordRepository;
 import com.example.demo.service.VendorEngagementService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service  
 public class VendorEngagementServiceImpl implements VendorEngagementService {
 
     private final VendorEngagementRecordRepository engagementRepo;
     private final PersonProfileRepository personRepo;
 
-    // ✅ EXACT constructor tests use
     public VendorEngagementServiceImpl(
             VendorEngagementRecordRepository engagementRepo,
             PersonProfileRepository personRepo
@@ -25,12 +26,18 @@ public class VendorEngagementServiceImpl implements VendorEngagementService {
 
     @Override
     public VendorEngagementRecord addEngagement(VendorEngagementRecord record) {
-        return engagementRepo.save(record);
-    }
 
-    @Override
-    public List<VendorEngagementRecord> getAllEngagements() {
-        return engagementRepo.findAll();
+        if (record.getEmployeeId() == null) {
+            throw new ApiException("Employee required");
+        }
+
+        PersonProfile employee = personRepo.findById(record.getEmployeeId())
+                .orElseThrow(() -> new ApiException("Employee not found"));
+
+        PersonProfile vendor = personRepo.findById(record.getVendorId())
+                .orElseThrow(() -> new ApiException("Vendor not found"));
+
+        return engagementRepo.save(record);
     }
 
     @Override
@@ -41,5 +48,10 @@ public class VendorEngagementServiceImpl implements VendorEngagementService {
     @Override
     public List<VendorEngagementRecord> getEngagementsByVendor(Long vendorId) {
         return engagementRepo.findByVendorId(vendorId);
+    }
+
+    @Override
+    public List<VendorEngagementRecord> getAllEngagements() {
+        return engagementRepo.findAll();
     }
 }
