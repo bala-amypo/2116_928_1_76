@@ -1,42 +1,34 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ApiException;
 import com.example.demo.model.ConflictFlag;
 import com.example.demo.repository.ConflictFlagRepository;
 import com.example.demo.service.ConflictFlagService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ConflictFlagServiceImpl
-        implements ConflictFlagService {
+public class ConflictFlagServiceImpl implements ConflictFlagService {
 
-    private final ConflictFlagRepository repository;
+    private final ConflictFlagRepository conflictFlagRepository;
 
-    public ConflictFlagServiceImpl(
-            ConflictFlagRepository repository) {
-        this.repository = repository;
+    public ConflictFlagServiceImpl(ConflictFlagRepository conflictFlagRepository) {
+        this.conflictFlagRepository = conflictFlagRepository;
     }
 
     @Override
-    public ConflictFlag addFlag(ConflictFlag flag) {
-        return repository.save(flag);
+    public ConflictFlag save(ConflictFlag flag) {
+        return conflictFlagRepository.save(flag);
     }
 
     @Override
-    public List<ConflictFlag> getFlagsByCase(Long caseId) {
-        return repository.findByCaseId(caseId);
+    public Optional<ConflictFlag> findById(Long id) {
+        return conflictFlagRepository.findById(id);
     }
 
     @Override
-    public ConflictFlag getFlagById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ApiException("Missing flag"));
-    }
-
-    @Override
-    public List<ConflictFlag> getAllFlags() {
-        return repository.findAll();
+    public List<ConflictFlag> findAll() {
+        return conflictFlagRepository.findAll();
     }
 }

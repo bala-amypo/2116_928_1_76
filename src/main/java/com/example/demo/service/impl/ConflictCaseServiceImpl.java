@@ -1,49 +1,35 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ApiException;
 import com.example.demo.model.ConflictCase;
 import com.example.demo.repository.ConflictCaseRepository;
 import com.example.demo.service.ConflictCaseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ConflictCaseServiceImpl
-        implements ConflictCaseService {
+public class ConflictCaseServiceImpl implements ConflictCaseService {
 
-    private final ConflictCaseRepository repository;
+    private final ConflictCaseRepository conflictCaseRepository;
 
-    public ConflictCaseServiceImpl(ConflictCaseRepository repository) {
-        this.repository = repository;
+    // ✅ REQUIRED CONSTRUCTOR (tests expect this)
+    public ConflictCaseServiceImpl(ConflictCaseRepository conflictCaseRepository) {
+        this.conflictCaseRepository = conflictCaseRepository;
     }
 
     @Override
-    public ConflictCase createCase(ConflictCase conflictCase) {
-        return repository.save(conflictCase);
+    public ConflictCase save(ConflictCase conflictCase) {
+        return conflictCaseRepository.save(conflictCase);
     }
 
     @Override
-    public ConflictCase updateCaseStatus(Long caseId, String status) {
-        ConflictCase conflictCase = getCaseById(caseId);
-        conflictCase.setStatus(status);
-        return repository.save(conflictCase);
+    public Optional<ConflictCase> findById(Long id) {
+        return conflictCaseRepository.findById(id);
     }
 
     @Override
-    public List<ConflictCase> getCasesByPerson(Long personId) {
-        return repository.findByPrimaryPersonIdOrSecondaryPersonId(
-                personId, personId);
-    }
-
-    @Override
-    public ConflictCase getCaseById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ApiException("Missing case"));
-    }
-
-    @Override
-    public List<ConflictCase> getAllCases() {
-        return repository.findAll();
+    public List<ConflictCase> findAll() {
+        return conflictCaseRepository.findAll();
     }
 }
