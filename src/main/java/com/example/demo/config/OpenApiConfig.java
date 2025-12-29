@@ -19,7 +19,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 // 🌐 Your server URL
                 .servers(List.of(
-                        new Server().url("https://9098.32procr.amypo.ai/")
+                        new Server().url("https://9130.408procr.amypo.ai/")
                 ))
 
                 // 🔐 Apply JWT security globally
